@@ -31,7 +31,16 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 // get user
-const getUser = asyncHandler(async (req, res) => {})
+const getUser = asyncHandler(async (req, res) => {
+    if (req.body.userId === req.params.id || req.body.isAdmin) {
+        const user = await User.findById(req.params.id)
+        !user && res.status(404).json({ message: 'Not Found' })
+        const { password, isAdmin, ...other } = user._doc
+        res.status(200).json(other)
+    } else {
+        res.status(401).json({ message: 'you can update only your account' })
+    }
+})
 
 // follow user
 const followUser = asyncHandler(async (req, res) => {})

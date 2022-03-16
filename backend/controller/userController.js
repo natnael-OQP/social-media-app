@@ -43,10 +43,34 @@ const getUser = asyncHandler(async (req, res) => {
 })
 
 // follow user
-const followUser = asyncHandler(async (req, res) => {})
+const followUser = asyncHandler(async (req, res) => {
+    if (req.body.userId !== req.params.id) {
+        try {
+            const user = await User.findById(req.params.id)
+            const follower = await User.findById(req.body.userId)
+            if (!user.followers.includes(req.body.userId)) {
+                await user.updateOne({ $push: { followers: req.body.userId } })
+                await follower.updateOne({
+                    $push: { following: req.params.id },
+                })
+
+            } else {
+                res.status(401).json({
+                    message: 'you already follow this user',
+                })
+            }
+        } catch (error) {
+            res.status(400).json(error)
+        }
+    } else {
+        res.status(401).json({ message: "you can't follow yourself" })
+    }
+})
 
 // un-follow user
-const unFollowUser = asyncHandler(async (req, res) => {})
+const unFollowUser = asyncHandler(async (req, res) => {
+    
+})
 
 module.exports = {
     updateUser,

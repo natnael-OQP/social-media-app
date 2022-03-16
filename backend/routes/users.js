@@ -1,3 +1,4 @@
+const router = require('express').Router()
 const {
     updateUser,
     deleteUser,
@@ -6,10 +7,10 @@ const {
     unFollowUser,
 } = require('../controller/userController')
 
-const router = require('express').Router()
-
+// routes
 router.get('/:id', getUser)
 router.put('/:id', updateUser)
 router.delete('/:id', deleteUser)
+router.put('/follow/:id', followUser)
 
 module.exports = router

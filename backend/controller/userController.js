@@ -73,7 +73,22 @@ const followUser = asyncHandler(async (req, res) => {
 
 // un-follow user
 const unFollowUser = asyncHandler(async (req, res) => {
-   
+    if (req.body.userId !== req.params.id) {
+        const user = await User.findById(req.params.id)
+        const unFollower = await User.findById(req.body.userId)
+        if (user.followers.includes(req.body.userId)) {
+            await user.updateOne({ $pull: { followers: req.body.userId } })
+            await unFollower.updateOne({
+                $pull: { followers: req.body.userId },
+            })
+
+            return res.status(200).json({ message: 'un-follow successfully ' })
+        }
+    } else {
+        return res.status(401).json({
+            message: "you can't follow or unfollow yourself",
+        })
+    }
 })
 
 module.exports = {

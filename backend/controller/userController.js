@@ -1,9 +1,48 @@
-const asyncHandler = require("express-async-handler");
+const asyncHandler = require('express-async-handler')
+const bcrypt = require('bcrypt')
+const User = require('../model/user')
 
-const getUser = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "homepage" });
-});
+// update
+const updateUser = asyncHandler(async (req, res) => {
+    if (req.body.userId === req.params.id || req.body.isAdmin) {
+        if (req.body.password) {
+            const salt = await bcrypt.genSalt(10)
+            req.body.password = await bcrypt.hash(req.body.password, salt)
+        }
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        })
+        res.status(200).json(user)
+    } else {
+        res.status(500).json({ message: 'you can update only your account ' })
+    }
+})
+
+// delete user
+const deleteUser = asyncHandler(async (req, res) => {
+    if (req.body.userId === req.params.id || req.body.isAdmin) {
+        const user = await User.findById(req.params.id)
+        !user && res.status(404).json({ message: 'Not Found' })
+        await User.findByIdAndDelete(req.params.id)
+        res.status(200).json({ message: 'user deleted successfully' })
+    } else {
+        res.status(401).json({ message: 'you can update only your account' })
+    }
+})
+
+// get user
+const getUser = asyncHandler(async (req, res) => {})
+
+// follow user
+const followUser = asyncHandler(async (req, res) => {})
+
+// un-follow user
+const unFollowUser = asyncHandler(async (req, res) => {})
 
 module.exports = {
-  getUser,
-};
+    updateUser,
+    deleteUser,
+    getUser,
+    followUser,
+    unFollowUser,
+}

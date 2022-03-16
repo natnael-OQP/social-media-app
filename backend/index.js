@@ -5,6 +5,7 @@ const morgan = require("morgan");
 // import
 const dbConnection = require("./config/db");
 const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
 // initialize
 dotenv.config();
 dbConnection();
@@ -13,7 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
-// api
+// apis
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 app.listen(process.env.PORT || 8000, () => {

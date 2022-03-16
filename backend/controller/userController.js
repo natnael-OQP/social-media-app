@@ -53,23 +53,27 @@ const followUser = asyncHandler(async (req, res) => {
                 await follower.updateOne({
                     $push: { following: req.params.id },
                 })
-
+                return res
+                    .status(200)
+                    .json({ message: 'followed successfully ' })
             } else {
-                res.status(401).json({
+                return res.status(401).json({
                     message: 'you already follow this user',
                 })
             }
         } catch (error) {
-            res.status(400).json(error)
+            return res.status(400).json(error)
         }
     } else {
-        res.status(401).json({ message: "you can't follow yourself" })
+        return res.status(401).json({
+            message: "you can't follow or unfollow yourself",
+        })
     }
 })
 
 // un-follow user
 const unFollowUser = asyncHandler(async (req, res) => {
-    
+   
 })
 
 module.exports = {

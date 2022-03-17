@@ -1,24 +1,31 @@
 const asyncHandler = require('express-async-handler')
 const Post = require('../model/post')
+const User = require('../model/user')
 
 // get post
 const getPost = asyncHandler(async (req, res) => {
     try {
         const post = await Post.find()
-        res.status(200).json(post)
+        return res.status(200).json(post)
     } catch (error) {
-        res.status(403).json(error)
+        return res.status(403).json(error)
     }
 })
 
-// get Single post
-const getSinglePost = asyncHandler(async (req, res) => {
+// get timeline posts
+const getTimelinePost = asyncHandler(async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
-        !post && res.status(404).json({ message: 'Port Not Found' })
-        res.status(200).json(post)
+        const currentUser = await User.findById(req.body.userId)
+        !currentUser && res.status(404).json({ message: 'User  Not Found' })
+        const userPost = await Post.find({ userId: currentUser._id })
+        const friendsPost = await Promise.all(
+            currentUser.following.map((friendId) =>
+                Post.find({ userId: friendId })
+            )
+        )
+        return res.status(200).json(userPost.concat(friendsPost))
     } catch (error) {
-        res.status(403).json(error)
+        return res.status(403).json(error)
     }
 })
 
@@ -30,7 +37,7 @@ const createPost = asyncHandler(async (req, res) => {
             const post = await Post.create(req.body)
             return res.status(200).json(post)
         } catch (error) {
-            res.status(404).json(error)
+            return res.status(404).json(error)
         }
     } else {
         return res.status(403).json({ message: 'fill required fields ' })
@@ -44,7 +51,9 @@ const deletePost = asyncHandler(async (req, res) => {
         !post && res.status(404).json({ message: 'Post Not Found' })
         if (req.body.userId === post.userId) {
             await Post.findByIdAndDelete(req.params.id)
-            res.status(200).json({ message: 'post Deleted successfully' })
+            return res
+                .status(200)
+                .json({ message: 'post Deleted successfully' })
         } else {
             return res
                 .status(401)
@@ -68,7 +77,7 @@ const updatePost = asyncHandler(async (req, res) => {
                     new: true,
                 }
             )
-            res.status(200).json(updated)
+            return res.status(200).json(updated)
         } else {
             return res
                 .status(401)
@@ -112,5 +121,5 @@ module.exports = {
     deletePost,
     updatePost,
     likeAndDislikePost,
-    getSinglePost,
+    getTimelinePost,
 }

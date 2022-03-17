@@ -5,11 +5,11 @@ const {
     updatePost,
     deletePost,
     likeAndDislikePost,
-    getSinglePost,
+    getTimelinePost,
 } = require('../controller/postController')
 
 router.get('/', getPost)
-router.get('/:id', getSinglePost)
+router.get('/timeline', getTimelinePost)
 router.post('/', createPost)
 router.put('/:id', updatePost)
 router.delete('/:id', deletePost)

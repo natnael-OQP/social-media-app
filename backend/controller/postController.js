@@ -23,7 +23,7 @@ const getTimelinePost = asyncHandler(async (req, res) => {
                 Post.find({ userId: friendId })
             )
         )
-        return res.status(200).json(userPost.concat(friendsPost))
+        return res.status(200).json(userPost.concat(...friendsPost))
     } catch (error) {
         return res.status(403).json(error)
     }

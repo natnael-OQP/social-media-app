@@ -15,7 +15,7 @@ const getPost = asyncHandler(async (req, res) => {
 // get timeline posts
 const getTimelinePost = asyncHandler(async (req, res) => {
     try {
-        const currentUser = await User.findById(req.body.userId)
+        const currentUser = await User.findById(req.params.userId)
         !currentUser && res.status(404).json({ message: 'User  Not Found' })
         const userPost = await Post.find({ userId: currentUser._id })
         const friendsPost = await Promise.all(

@@ -2,6 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const helmet = require('helmet')
 const morgan = require('morgan')
+const cors = require('cors')
 // import
 const dbConnection = require('./config/db')
 const userRoutes = require('./routes/users')
@@ -15,6 +16,8 @@ const app = express()
 app.use(express.json())
 app.use(helmet())
 app.use(morgan('common'))
+app.use(cors())
+
 // apis
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)

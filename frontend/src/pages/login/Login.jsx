@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './login.css'
 
 export default function Login() {
+    const navigation = useNavigate()
     const [input, setInput] = useState()
     const changeHandler = (e) => {
         setInput(() => ({}))
@@ -33,7 +35,10 @@ export default function Login() {
                         />
                         <button className="loginButton">Log In</button>
                         <span className="loginForgot">Forgot Password?</span>
-                        <button className="loginRegisterButton">
+                        <button
+                            onClick={() => navigation('/login')}
+                            className="loginRegisterButton"
+                        >
                             Create a New Account
                         </button>
                     </div>

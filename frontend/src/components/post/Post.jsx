@@ -44,13 +44,13 @@ export default function Post({ post }) {
                     <div className="postBottomLeft">
                         <img
                             className="likeIcon"
-                            src="assets/like.png"
+                            src="http://localhost:3000/assets/like.png"
                             onClick={likeHandler}
                             alt=""
                         />
                         <img
                             className="likeIcon"
-                            src="assets/heart.png"
+                            src="http://localhost:3000/assets/heart.png"
                             onClick={likeHandler}
                             alt=""
                         />

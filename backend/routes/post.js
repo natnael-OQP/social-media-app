@@ -9,7 +9,7 @@ const {
 } = require('../controller/postController')
 
 router.get('/', getPost)
-router.get('/timeline', getTimelinePost)
+router.get('/timeline/:userId', getTimelinePost)
 router.post('/', createPost)
 router.put('/:id', updatePost)
 router.delete('/:id', deletePost)

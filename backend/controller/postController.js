@@ -29,6 +29,14 @@ const getTimelinePost = asyncHandler(async (req, res) => {
     }
 })
 
+// get all user  posts
+const getAllUsersPost = asyncHandler(async (req, res) => {
+    const user = await User.findOne({ username: req.params.username })
+    !user && res.status(404).json({ message: 'User  Not Found' })
+    const post = await Post.find({ userId: user._id })
+    return res.status(200).json(post)
+})
+
 // create post
 const createPost = asyncHandler(async (req, res) => {
     const { userId, desc } = req.body
@@ -122,4 +130,5 @@ module.exports = {
     updatePost,
     likeAndDislikePost,
     getTimelinePost,
+    getAllUsersPost,
 }

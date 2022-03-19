@@ -2,6 +2,8 @@ import './post.css'
 import { MoreVert } from '@material-ui/icons'
 import { useEffect, useState } from 'react'
 import instance from '../../lib/axios'
+import { format } from 'timeago.js'
+import { Link } from 'react-router-dom'
 
 export default function Post({ post }) {
     console.log(post)
@@ -20,25 +22,32 @@ export default function Post({ post }) {
         }
         fetcher()
     }, [post.userId])
-    console.log(user)
-
     return (
         <div className="post">
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <img
-                            className="postProfileImg"
-                            src={
-                                user.profilePic
-                                    ? user.profilePic
-                                    : 'http://localhost:3000/assets/person/noAvatar.png'
-                            }
-                            alt=""
-                        />
-                        <span className="postUsername">{user.username}</span>
+                        <Link to={`/profile/${user?.username}`}>
+                            <img
+                                className="postProfileImg"
+                                src={
+                                    user?.profilePic ||
+                                    'http://localhost:3000/assets/person/noAvatar.png'
+                                }
+                                alt=""
+                            />
+                        </Link>
+                        <Link
+                            to={`/profile/${user?.username}`}
+                            className="link"
+                            style={{ color: '#333' }}
+                        >
+                            <span className="postUsername">
+                                {user?.username}
+                            </span>
+                        </Link>
                         <span className="postDate">
-                            {new Date(user.createdAt).toDateString()}
+                            {format(user?.createdAt)}
                         </span>
                     </div>
                     <div className="postTopRight">

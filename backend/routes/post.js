@@ -9,9 +9,9 @@ const {
     getAllUsersPost,
 } = require('../controller/postController')
 
-router.get('/', getPost)
+router.get('/:id', getPost)
 router.get('/timeline/:userId', getTimelinePost)
-router.get('/profile/:username', getAllUsersPost)
+router.get('/profile/:userId', getAllUsersPost)
 router.post('/', createPost)
 router.put('/:id', updatePost)
 router.delete('/:id', deletePost)

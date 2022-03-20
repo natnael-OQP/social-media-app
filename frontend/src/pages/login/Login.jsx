@@ -1,13 +1,33 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { context } from '../../context/context'
+import Spinner from '../../components/spinner/Spinner'
+import instance from '../../lib/axios'
 import './login.css'
 
 export default function Login() {
-    const navigation = useNavigate()
+    const { isLoading, isError, user, dispatch } = useContext(context)
     const [input, setInput] = useState()
+    const navigation = useNavigate()
+
     const changeHandler = (e) => {
-        setInput(() => ({}))
+        setInput((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }))
     }
+
+    const handelSubmit = async (e) => {
+        e.preventDefault()
+        dispatch({ type: 'Login_Start' })
+        try {
+            const { data } = await instance.post('auth/login', input)
+            dispatch({ type: 'Login_Success', payload: data })
+        } catch (error) {
+            dispatch({ type: 'Login_Failure' })
+        }
+    }
+    if (isLoading) return <Spinner />
 
     return (
         <div className="login">
@@ -20,20 +40,26 @@ export default function Login() {
                     </span>
                 </div>
                 <div className="loginRight">
-                    <div className="loginBox">
+                    <form onSubmit={handelSubmit} className="loginBox">
                         <input
-                            placeholder="Email"
+                            type="text"
+                            placeholder="username"
                             className="loginInput"
-                            name="email"
+                            name="username"
+                            required={true}
                             onChange={changeHandler}
                         />
                         <input
+                            type="password"
+                            required={true}
                             placeholder="Password"
                             className="loginInput"
                             name="password"
                             onChange={changeHandler}
                         />
-                        <button className="loginButton">Log In</button>
+                        <button type="submit" className="loginButton">
+                            Log In
+                        </button>
                         <span className="loginForgot">Forgot Password?</span>
                         <button
                             onClick={() => navigation('/login')}
@@ -41,7 +67,7 @@ export default function Login() {
                         >
                             Create a New Account
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

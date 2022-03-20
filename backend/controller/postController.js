@@ -2,10 +2,11 @@ const asyncHandler = require('express-async-handler')
 const Post = require('../model/post')
 const User = require('../model/user')
 
-// get post
+// get a post
 const getPost = asyncHandler(async (req, res) => {
     try {
-        const post = await Post.find()
+        const post = await Post.findById(req.params.id)
+        !post && res.status(404).json({ message: 'Post  Not Found' })
         return res.status(200).json(post)
     } catch (error) {
         return res.status(403).json(error)
@@ -31,9 +32,8 @@ const getTimelinePost = asyncHandler(async (req, res) => {
 
 // get all user  posts
 const getAllUsersPost = asyncHandler(async (req, res) => {
-    const user = await User.findOne({ username: req.params.username })
-    !user && res.status(404).json({ message: 'User  Not Found' })
-    const post = await Post.find({ userId: user._id })
+    const post = await Post.find({ userId: req.params.userId })
+    !post && res.status(404).json({ message: 'User  Not Found' })
     return res.status(200).json(post)
 })
 

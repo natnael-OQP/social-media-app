@@ -5,17 +5,17 @@ import { useEffect, useState } from 'react'
 import instance from '../../lib/axios'
 import Spinner from '../spinner/Spinner'
 
-export default function Feed({ username }) {
+export default function Feed({ userId }) {
     const [posts, setPosts] = useState()
     useEffect(() => {
         const fetcher = async () => {
-            const { data } = username
-                ? await instance.get('posts/profile/' + username)
+            const { data } = userId
+                ? await instance.get('posts/profile/' + userId)
                 : await instance.get('posts/timeline/62331709f253d8840ea9b78d')
             setPosts(data)
         }
         fetcher()
-    }, [username])
+    }, [userId])
     if (!posts) return <Spinner />
     return (
         <div className="feed">

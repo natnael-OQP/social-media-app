@@ -1,17 +1,24 @@
 import './post.css'
 import { MoreVert } from '@material-ui/icons'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import instance from '../../lib/axios'
 import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
+import { context } from '../../context/context'
 
 export default function Post({ post }) {
     const [like, setLike] = useState(post?.likes.length)
-    const [isLiked, setIsLiked] = useState(false)
     const [user, setUser] = useState()
-    const likeHandler = () => {
-        setLike(isLiked ? like - 1 : like + 1)
-        setIsLiked(!isLiked)
+    const { user: authUser } = useContext(context)
+    const likeHandler = async () => {
+        try {
+            await instance.put(`posts/${post._id}/like`, {
+                userId: authUser._id,
+            })
+            setLike(like ? like - 1 : like + 1)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {

@@ -18,7 +18,7 @@ export default function Feed({ userId }) {
             setPosts(data)
         }
         fetcher()
-    }, [userId])
+    }, [userId, user._id])
     if (!posts) return <Spinner />
     return (
         <div className="feed">

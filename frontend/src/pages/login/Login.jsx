@@ -62,7 +62,7 @@ export default function Login() {
                         </button>
                         <span className="loginForgot">Forgot Password?</span>
                         <button
-                            onClick={() => navigation('/login')}
+                            onClick={() => navigation('/')}
                             className="loginRegisterButton"
                         >
                             Create a New Account

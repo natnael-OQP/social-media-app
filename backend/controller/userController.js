@@ -38,6 +38,21 @@ const getUser = asyncHandler(async (req, res) => {
     res.status(200).json(other)
 })
 
+// get fiends
+const getFiends = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        const friends = await Promise.all(
+            user.following.map((friendsId) => {
+                return User.findById(friendsId)
+            })
+        )
+        res.status(200).json(friends)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 // follow user
 const followUser = asyncHandler(async (req, res) => {
     if (req.body.userId !== req.params.id) {
@@ -93,4 +108,5 @@ module.exports = {
     getUser,
     followUser,
     unFollowUser,
+    getFiends,
 }

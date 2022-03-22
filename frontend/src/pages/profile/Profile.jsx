@@ -52,7 +52,7 @@ export default function Profile() {
                     </div>
                     <div className="profileRightBottom">
                         <Feed userId={userId} />
-                        <Rightbar user={user} />
+                        <Rightbar users={user} />
                     </div>
                 </div>
             </div>

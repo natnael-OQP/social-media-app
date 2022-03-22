@@ -27,7 +27,8 @@ export default function Feed({ userId }) {
     return (
         <div className="feed">
             <div className="feedWrapper">
-                <Share user={user} />
+                {userId === user._id && <Share user={user} />}
+
                 {posts?.map((post) => (
                     <Post key={post._id} post={post} />
                 ))}

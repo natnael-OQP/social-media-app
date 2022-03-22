@@ -15,7 +15,11 @@ export default function Feed({ userId }) {
             const { data } = userId
                 ? await instance.get('posts/profile/' + userId)
                 : await instance.get('posts/timeline/' + user._id)
-            setPosts(data)
+            setPosts(
+                data.sort(
+                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                )
+            )
         }
         fetcher()
     }, [userId, user._id])

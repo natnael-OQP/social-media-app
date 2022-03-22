@@ -81,3 +81,18 @@
   object-fit: cover;
   border-radius: 5px;
 }
+
+.rightBarFollowButton{
+  display: flex;
+  font-size:15px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 15px;
+  margin: 20px 0 10px 0;
+  border: none;
+  border-radius:7px;
+  cursor: pointer;
+}
+.rightBarFollowButton:hover{
+  padding: 6px 16px;
+}

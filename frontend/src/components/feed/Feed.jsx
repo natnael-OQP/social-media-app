@@ -22,12 +22,12 @@ export default function Feed({ userId }) {
             )
         }
         fetcher()
-    }, [userId, user._id])
+    }, [userId, user?._id])
     if (!posts) return <Spinner />
     return (
         <div className="feed">
             <div className="feedWrapper">
-                {userId === user._id && <Share user={user} />}
+                {(!userId || userId === user._id) && <Share user={user} />}
 
                 {posts?.map((post) => (
                     <Post key={post._id} post={post} />

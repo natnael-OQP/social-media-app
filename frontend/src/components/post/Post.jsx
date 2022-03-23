@@ -2,7 +2,6 @@ import './post.css'
 import { MoreVert } from '@material-ui/icons'
 import { useContext, useEffect, useState } from 'react'
 import instance from '../../lib/axios'
-import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
 import { context } from '../../context/context'
 
@@ -54,7 +53,7 @@ export default function Post({ post }) {
                             </span>
                         </Link>
                         <span className="postDate">
-                            {format(user?.createdAt)}
+                            {new Date(user?.createdAt).toDateString()}
                         </span>
                     </div>
                     <div className="postTopRight">

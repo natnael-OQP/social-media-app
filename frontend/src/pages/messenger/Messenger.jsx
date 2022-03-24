@@ -5,8 +5,10 @@ import Message from '../../components/message/Message'
 import ChatOnline from '../../components/chatOnline/ChatOnline'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { context } from '../../context/context'
+import instance from '../../lib/axios.js'
 
 export default function Messenger() {
+    const { user } = useContext(context)
     const [conversations, setConversations] = useState([])
     const [currentChat, setCurrentChat] = useState(null)
     const [messages, setMessages] = useState([])
@@ -14,36 +16,44 @@ export default function Messenger() {
     const [arrivalMessage, setArrivalMessage] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
     const socket = useRef()
-    const { user } = useContext(context)
     const scrollRef = useRef()
 
-    useEffect(() => {}, [])
-
     useEffect(() => {
-        const getConversations = async () => {
-            try {
-            } catch (err) {
-                console.log(err)
-            }
+        const getConversation = async () => {
+            const { data } = await instance.get(`conversation/${user._id}`)
+            setConversations(data)
         }
-        getConversations()
+        getConversation()
     }, [user._id])
 
     useEffect(() => {
         const getMessages = async () => {
-            try {
-            } catch (err) {
-                console.log(err)
-            }
+            const { data } = await instance.get('message/' + currentChat?._id)
+            setMessages(data)
         }
         getMessages()
-    }, [])
+    }, [currentChat?._id])
+    //  scroll
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!newMessage) return
+        const message = {
+            conversationId: currentChat?._id,
+            sender: user?._id,
+            text: newMessage,
+        }
+        try {
+            const { data } = await instance.post('message', message)
+            setNewMessage('')
+            setMessages([...messages, data])
+        } catch (error) {
+            console.log(error)
+        }
     }
-
-    useEffect(() => {}, [])
 
     return (
         <>
@@ -55,8 +65,11 @@ export default function Messenger() {
                             placeholder="Search for friends"
                             className="chatMenuInput"
                         />
-                        {conversations.map((c) => (
-                            <div onClick={() => setCurrentChat(c)}>
+                        {conversations.map((c, i) => (
+                            <div
+                                kry={c._id + i}
+                                onClick={() => setCurrentChat(c)}
+                            >
                                 <Conversation
                                     conversation={c}
                                     currentUser={user}
@@ -70,8 +83,8 @@ export default function Messenger() {
                         {currentChat ? (
                             <>
                                 <div className="chatBoxTop">
-                                    {messages.map((m) => (
-                                        <div ref={scrollRef}>
+                                    {messages.map((m, i) => (
+                                        <div ref={scrollRef} key={m._id + i}>
                                             <Message
                                                 message={m}
                                                 own={m.sender === user._id}

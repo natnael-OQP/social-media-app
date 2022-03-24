@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 import { useContext } from 'react'
 import { context } from './context/context'
+import Messenger from './pages/messenger/Messenger'
 
 function App() {
     const { user } = useContext(context)
@@ -22,6 +23,7 @@ function App() {
                     element={user ? <Navigate to="/" /> : <Login />}
                 />
                 <Route path="/profile/:userId" element={<Profile />} />
+                <Route path="/message" element={<Messenger />} />
             </Routes>
         </Router>
     )

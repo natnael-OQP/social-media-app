@@ -6,6 +6,7 @@ import ChatOnline from '../../components/chatOnline/ChatOnline'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { context } from '../../context/context'
 import instance from '../../lib/axios.js'
+import { io } from 'socket.io-client'
 
 export default function Messenger() {
     const { user } = useContext(context)
@@ -13,11 +14,23 @@ export default function Messenger() {
     const [currentChat, setCurrentChat] = useState(null)
     const [messages, setMessages] = useState([])
     const [newMessage, setNewMessage] = useState('')
-    const [arrivalMessage, setArrivalMessage] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
     const socket = useRef()
     const scrollRef = useRef()
 
+    useEffect(() => {
+        socket.current = io('ws://localhost:8900')
+    }, [])
+
+    // add user to socket server
+    useEffect(() => {
+        socket.current.emit('addUser', user?._id)
+        socket.current.on('getUsers', (message) => console.log(message))
+    }, [user])
+
+    // console.log(socket.current)
+
+    // get conversations
     useEffect(() => {
         const getConversation = async () => {
             const { data } = await instance.get(`conversation/${user._id}`)
@@ -26,6 +39,7 @@ export default function Messenger() {
         getConversation()
     }, [user._id])
 
+    // get messages
     useEffect(() => {
         const getMessages = async () => {
             const { data } = await instance.get('message/' + currentChat?._id)
@@ -38,6 +52,7 @@ export default function Messenger() {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
+    // handel submit
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!newMessage) return

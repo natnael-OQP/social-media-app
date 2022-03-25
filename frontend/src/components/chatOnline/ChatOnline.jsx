@@ -17,8 +17,9 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
 
     return (
         <div className="chatOnline">
-            {onlineFriends.map((o) => (
+            {onlineFriends.map((o, i) => (
                 <div
+                    key={o + i}
                     className="chatOnlineFriend"
                     onClick={() => handleClick(o)}
                 >

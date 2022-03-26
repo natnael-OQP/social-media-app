@@ -14,21 +14,33 @@ export default function Messenger() {
     const [currentChat, setCurrentChat] = useState(null)
     const [messages, setMessages] = useState([])
     const [newMessage, setNewMessage] = useState('')
+    const [arrivalMessage, setArrivalMessage] = useState('')
     const [onlineUsers, setOnlineUsers] = useState([])
     const socket = useRef()
     const scrollRef = useRef()
 
     useEffect(() => {
         socket.current = io('ws://localhost:8900')
+        socket.current.on('getMessage', (data) => {
+            setArrivalMessage({
+                sender: data.senderId,
+                text: data.text,
+                createdAt: Date.now(),
+            })
+        })
     }, [])
+
+    useEffect(() => {
+        arrivalMessage &&
+            currentChat?.members.includes(arrivalMessage.sender) &&
+            setMessages((prev) => [...prev, arrivalMessage])
+    }, [arrivalMessage, currentChat])
 
     // add user to socket server
     useEffect(() => {
         socket.current.emit('addUser', user?._id)
         socket.current.on('getUsers', (message) => console.log(message))
     }, [user])
-
-    // console.log(socket.current)
 
     // get conversations
     useEffect(() => {
@@ -61,6 +73,13 @@ export default function Messenger() {
             sender: user?._id,
             text: newMessage,
         }
+        socket.current.emit('sendMessage', {
+            senderId: user?._id,
+            receiverId: currentChat.members.filter(
+                (member) => member !== user._id
+            ),
+            text: newMessage,
+        })
         try {
             const { data } = await instance.post('message', message)
             setNewMessage('')
